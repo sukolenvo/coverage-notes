@@ -77,4 +77,4 @@ complexity: 0.00
   REQUIRE(coverageInfo.print() == expected);
 }
 
-}
+} // namespace

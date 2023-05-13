@@ -54,14 +54,13 @@ std::string CoverageInfo::print() const
   std::string value{};
   if (instructionMissed > 0 || instructionCovered > 0) {
     value.append(fmt::format("instruction: {:.2f}\n",
-                             static_cast<long double>(instructionCovered) / (instructionMissed + instructionCovered)));
+      static_cast<long double>(instructionCovered) / (instructionMissed + instructionCovered)));
   }
   if (lineMissed > 0 || lineCovered > 0) {
     value.append(fmt::format("line: {:.2f}\n", static_cast<long double>(lineCovered) / (lineMissed + lineCovered)));
   }
   if (classMissed > 0 || classCovered > 0) {
-    value.append(
-      fmt::format("class: {:.2f}\n", static_cast<long double>(classCovered) / (classCovered + classMissed)));
+    value.append(fmt::format("class: {:.2f}\n", static_cast<long double>(classCovered) / (classCovered + classMissed)));
   }
   if (branchMissed > 0 || branchCovered > 0) {
     value.append(

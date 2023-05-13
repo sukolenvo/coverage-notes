@@ -7,7 +7,8 @@ namespace {
 TEST_CASE("JacocoParserTests:all", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
   <sessioninfo id="object-21061aa9" start="1683895529957" dump="1683895566710"/>
   <counter type="INSTRUCTION" missed="1" covered="2"/>
@@ -40,20 +41,22 @@ TEST_CASE("JacocoParserTests:all", "[jacoco]")
 TEST_CASE("JacocoParserTests:malformed", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <test>
 </report>
 )";
   JacocoParser parser;
   parser.set_throw_messages(true);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml),  xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
 }
 
 TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="TEST" missed="5" covered="6"/>
 <counter type="INSTRUCTION" missed="1" covered="2"/>
@@ -71,7 +74,8 @@ TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
 TEST_CASE("JacocoParserTests:negative_counter", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="INSTRUCTION" missed="-1" covered="2"/>
 </report>
@@ -79,13 +83,14 @@ TEST_CASE("JacocoParserTests:negative_counter", "[jacoco]")
   JacocoParser parser;
   parser.set_throw_messages(true);
   parser.parse_memory(xml);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml),  xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
 }
 
 TEST_CASE("JacocoParserTests:parse_integer_error", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="INSTRUCTION" missed="test" covered="2"/>
 </report>
@@ -93,13 +98,14 @@ TEST_CASE("JacocoParserTests:parse_integer_error", "[jacoco]")
   JacocoParser parser;
   parser.set_throw_messages(true);
   parser.parse_memory(xml);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml),  xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
 }
 
 TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="INSTRUCTION" missed="1" covered="2" other="3"/>
 </report>
@@ -116,7 +122,8 @@ TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
 TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="INSTRUCTION" covered="2"/>
 </report>
@@ -133,7 +140,8 @@ TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
 TEST_CASE("JacocoParserTests:no_values", "[jacoco]")
 {
   // language=XML
-  const auto xml = R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
+  const auto xml =
+    R"(<?xml version="1.0" encoding="UTF-8" standalone="yes"?><!DOCTYPE report PUBLIC "-//JACOCO//DTD Report 1.1//EN" "report.dtd">
 <report name="test-service">
 <counter type="INSTRUCTION"/>
 </report>
@@ -145,4 +153,4 @@ TEST_CASE("JacocoParserTests:no_values", "[jacoco]")
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 
-}
+} // namespace
