@@ -2,6 +2,10 @@
 
 #include "jacoco/JacocoParser.h"
 
+
+#include <exception>
+#include <iostream>
+
 namespace {
 
 TEST_CASE("JacocoParserTests:all", "[jacoco]")
@@ -82,7 +86,6 @@ TEST_CASE("JacocoParserTests:negative_counter", "[jacoco]")
 )";
   JacocoParser parser;
   parser.set_throw_messages(true);
-  parser.parse_memory(xml);
   REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
 }
 
@@ -97,7 +100,6 @@ TEST_CASE("JacocoParserTests:parse_integer_error", "[jacoco]")
 )";
   JacocoParser parser;
   parser.set_throw_messages(true);
-  parser.parse_memory(xml);
   REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
 }
 
@@ -132,7 +134,6 @@ TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
   parser.set_throw_messages(true);
   parser.parse_memory(xml);
   CoverageInfo expected;
-  expected.setInstructionMissed(1);
   expected.setInstructionCovered(2);
   REQUIRE(parser.getCoverageInfo() == expected);
 }

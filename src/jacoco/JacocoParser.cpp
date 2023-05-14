@@ -4,6 +4,15 @@
 
 #include "JacocoParser.h"
 
+long parseNumber(const auto &value)
+{
+  try {
+    return std::stoi(value);
+  } catch (const std::invalid_argument &e) {
+    throw xmlpp::parse_error(std::string("Cannot convert to integer value: ") + value);
+  }
+}
+
 void JacocoParser::on_start_element(const xmlpp::ustring &name, const xmlpp::SaxParser::AttributeList &attributeList)
 {
   spdlog::debug("start element {}", name);
@@ -17,15 +26,15 @@ void JacocoParser::on_start_element(const xmlpp::ustring &name, const xmlpp::Sax
       if (attribute == attr_type) {
         counter.type = value;
       } else if (attribute == attr_missed) {
-        const long missed = std::stoi(value);
+        const long missed = parseNumber(value);
         if (missed < 0) {
-          spdlog::critical("Missed attribute cannot be negative, got {}", missed);
+          throw xmlpp::parse_error(std::string("Missed attribute cannot be negative, got: ") + value);
         }
         counter.missed = static_cast<unsigned long>(missed);
       } else if (attribute == attr_covered) {
-        const long covered = std::stoi(value);
+        const long covered = parseNumber(value);
         if (covered < 0) {
-          spdlog::critical("Covered attribute cannot be negative, got {}", covered);
+          throw xmlpp::parse_error(std::string("Covered attribute cannot be negative, got: ") + value);
         }
         counter.covered = static_cast<unsigned long>(covered);
       }
