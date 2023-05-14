@@ -131,7 +131,7 @@ jobs:
         # conan package libffi doesn't handle path escaping correctly
         if: ${{ contains(matrix.compiler, 'llvm') && runner.os == 'Linux' }}
         run: |
-          echo "LDFLAGS=$(echo $LDFLAGS | tr -d '"')" > $GITHUB_ENV
+          echo "LDFLAGS=$(echo $LDFLAGS | tr -d '"\\')" > $GITHUB_ENV
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
