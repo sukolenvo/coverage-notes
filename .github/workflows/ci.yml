@@ -129,7 +129,7 @@ jobs:
 
       - name: Fix LDFLAGS
         # conan package libffi doesn't handle path escaping correctly
-        if: ${{ contains(matrix.compiler, 'llvm') && runner.os == 'Linux' }}
+        if: ${{ contains(matrix.compiler, 'llvm') && runner.os != 'Windows' }}
         run: |
           echo "LDFLAGS=$(echo $LDFLAGS | tr -d '"\\')" > $GITHUB_ENV
 
