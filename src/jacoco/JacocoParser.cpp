@@ -13,7 +13,7 @@ void JacocoParser::on_start_element(const xmlpp::ustring &name, const xmlpp::Sax
   static const xmlpp::ustring attr_covered = "covered";
   if (name == "counter" && xmlPath == searchPath) {
     Counter counter;
-    for (const auto &[attribute, value] : attributeList) {
+    for (auto [attribute, value] : attributeList) {
       if (attribute == attr_type) {
         counter.type = value;
       } else if (attribute == attr_missed) {
