@@ -1,7 +1,7 @@
 find_package(Catch2 CONFIG REQUIRED)
 
-add_executable(core_tests core_tests.cpp CoverageInfoTests.cpp)
-target_link_libraries(core_tests core project_options project_warnings Catch2::Catch2)
+add_executable(core_tests CoverageInfoTests.cpp)
+target_link_libraries(core_tests core project_options project_warnings Catch2::Catch2WithMain)
 
 include(Catch)
 
@@ -12,7 +12,7 @@ catch_discover_tests(
     TEST_PREFIX
     "coretests."
     REPORTER
-    xml
+    XML
     OUTPUT_DIR
     .
     OUTPUT_PREFIX
