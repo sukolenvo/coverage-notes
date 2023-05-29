@@ -127,11 +127,17 @@ jobs:
           gcovr: true
           opencppcoverage: true
 
-      - name: Fix LDFLAGS
+      - name: Fix LDFLAGS Unix
         # conan package libffi doesn't handle path escaping correctly
         if: ${{ contains(matrix.compiler, 'llvm') && runner.os != 'Windows' }}
         run: |
           echo "LDFLAGS=$(echo $LDFLAGS | tr -d '"\\')" > $GITHUB_ENV
+
+      - name: Fix LDFLAGS Windows
+        # conan package libffi doesn't handle path escaping correctly
+        if: ${{ contains(matrix.compiler, 'llvm') && runner.os == 'Windows' }}
+        run: |
+          echo ("LDFLAGS=" + $env:LDFLAGS.replace("\""", "").replace("\", "\\").replace("/", "\\")) >> $env:GITHUB_ENV
 
         # make sure coverage is only enabled for Debug builds, since it sets -O0 to make sure coverage
         # has meaningful results
