@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <string>
 
 #include "spdlog/spdlog.h"
@@ -9,49 +10,48 @@ long parseNumber(const auto &value)
   try {
     return std::stoi(value);
   } catch (const std::invalid_argument &e) {
-    throw xmlpp::parse_error(std::string("Cannot convert to integer value: ") + value);
+    throw std::invalid_argument("Cannot convert to integer value: ");
   }
 }
 
-void JacocoParser::on_start_element(const xmlpp::ustring &name, const xmlpp::SaxParser::AttributeList &attributeList)
+void JacocoParser::on_tag_start(const std::vector<std::string> &tagXmlPath, const std::vector<simple_cpp::xml::Attribute> &attributes)
 {
-  spdlog::debug("start element {}", name);
-  static const std::vector<xmlpp::ustring> searchPath{ "report" };
-  static const xmlpp::ustring attr_type = "type";
-  static const xmlpp::ustring attr_missed = "missed";
-  static const xmlpp::ustring attr_covered = "covered";
-  if (name == "counter" && xmlPath == searchPath) {
+  spdlog::debug("start element {}", tagXmlPath.back());
+  static const std::vector<std::string> searchPath{ "report", "counter" };
+  static const std::string attr_type("type");
+  static const std::string attr_missed("missed");
+  static const std::string attr_covered("covered");
+  if (tagXmlPath == searchPath) {
     Counter counter;
-    for (auto [attribute, value] : attributeList) {
+    for (auto [attribute, value] : attributes) {
       if (attribute == attr_type) {
         counter.type = value;
       } else if (attribute == attr_missed) {
         const long missed = parseNumber(value);
         if (missed < 0) {
-          throw xmlpp::parse_error(std::string("Missed attribute cannot be negative, got: ") + value);
+          throw std::invalid_argument(std::string("Missed attribute cannot be negative, got: ") + value);
         }
         counter.missed = static_cast<unsigned long>(missed);
       } else if (attribute == attr_covered) {
         const long covered = parseNumber(value);
         if (covered < 0) {
-          throw xmlpp::parse_error(std::string("Covered attribute cannot be negative, got: ") + value);
+          throw std::invalid_argument(std::string("Covered attribute cannot be negative, got: ") + value);
         }
         counter.covered = static_cast<unsigned long>(covered);
       }
     }
     saveCounter(counter);
   }
-  xmlPath.push_back(name);
 }
 
 void JacocoParser::saveCounter(const Counter &counter)
 {
-  static const xmlpp::ustring type_instruction = "INSTRUCTION";
-  static const xmlpp::ustring type_branch = "BRANCH";
-  static const xmlpp::ustring type_line = "LINE";
-  static const xmlpp::ustring type_complexity = "COMPLEXITY";
-  static const xmlpp::ustring type_method = "METHOD";
-  static const xmlpp::ustring type_class = "CLASS";
+  static const std::string type_instruction("INSTRUCTION");
+  static const std::string type_branch("BRANCH");
+  static const std::string type_line("LINE");
+  static const std::string type_complexity("COMPLEXITY");
+  static const std::string type_method("METHOD");
+  static const std::string type_class("CLASS");
   if (counter.type.empty()) {
     spdlog::warn("Ignoring counter without type");
     return;
@@ -77,36 +77,6 @@ void JacocoParser::saveCounter(const Counter &counter)
   } else {
     spdlog::warn("Ignoring unknown counter {}", counter.type);
   }
-}
-
-void JacocoParser::on_end_element(const xmlpp::ustring &name)
-{
-  spdlog::debug("end element {}", name);
-  if (xmlPath.empty() || xmlPath.back() != name) {
-    std::string xmlPathStr = "/";
-    for (const auto &element : xmlPath) {
-      xmlPathStr.append(element);
-      xmlPathStr.append("/");
-    }
-    spdlog::critical(
-      "Invalid XML: open tags don't match closed tags. XmlPath: {}. But got close tag {}", xmlPathStr, name);
-  }
-  xmlPath.pop_back();
-}
-
-void JacocoParser::on_warning(const xmlpp::ustring &text)
-{
-  spdlog::warn("Warning: {}", text);
-}
-
-void JacocoParser::on_error(const xmlpp::ustring &text)
-{
-  spdlog::error("Error: {}", text);
-}
-
-void JacocoParser::on_fatal_error(const xmlpp::ustring &text)
-{
-  spdlog::critical("Fatal error: {}", text);
 }
 
 CoverageInfo JacocoParser::getCoverageInfo() const

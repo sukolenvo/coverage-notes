@@ -32,6 +32,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
+add_subdirectory(vendor/simple-cpp-xml)
 
 # Set the project name and language
 project(

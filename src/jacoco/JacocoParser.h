@@ -3,18 +3,17 @@
 
 #include <vector>
 
-#include "libxml++/libxml++.h"
+#include "simple_cpp_xml/parser.hpp"
 
 #include "core/CoverageInfo.h"
 
-class JacocoParser : public xmlpp::SaxParser
+class JacocoParser : public simple_cpp::xml::Parser
 {
 private:
-  std::vector<xmlpp::ustring> xmlPath;
   CoverageInfo coverageInfo;
   struct Counter
   {
-    xmlpp::ustring type{};
+    std::string type{};
     unsigned long missed{};
     unsigned long covered{};
   };
@@ -26,11 +25,8 @@ public:
   [[nodiscard]] CoverageInfo getCoverageInfo() const;
 
 protected:
-  void on_start_element(const xmlpp::ustring &name, const AttributeList &properties) override;
-  void on_end_element(const xmlpp::ustring &name) override;
-  void on_warning(const xmlpp::ustring &text) override;
-  void on_error(const xmlpp::ustring &text) override;
-  void on_fatal_error(const xmlpp::ustring &text) override;
+  void on_tag_start(const std::vector<std::string> &tagXmlPath,
+    const std::vector<simple_cpp::xml::Attribute> &attributes) override;
 };
 
 

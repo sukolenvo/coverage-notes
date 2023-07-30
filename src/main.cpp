@@ -3,6 +3,7 @@
 #include "CLI/App.hpp"
 #include "CLI/Config.hpp"
 #include "CLI/Formatter.hpp"
+#include <simple_cpp_xml/exception.hpp>
 #include "spdlog/spdlog.h"
 #include <fmt/core.h>
 
@@ -26,10 +27,9 @@ int main(int argc, const char **argv)
   CLI11_PARSE(app, argc, argv);
   try {
     JacocoParser parser;
-    parser.set_throw_messages(true);
-    parser.parse_file(filename);
+    parser.parse(filename);
     spdlog::info("Parsed coverage: \n{}", parser.getCoverageInfo());
-  } catch (const xmlpp::exception &ex) {
+  } catch (const simple_cpp::xml::ParseError &ex) {
     spdlog::error("Failed to parse xml {}", ex.what());
     return EXIT_FAILURE;
   }

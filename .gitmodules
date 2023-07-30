@@ -1,0 +1,3 @@
+[submodule "vendor/simple-cpp-xml"]
+	path = vendor/simple-cpp-xml
+	url = git@github.com:sukolenvo/simple-cpp-xml.git
