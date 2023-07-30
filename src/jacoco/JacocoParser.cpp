@@ -14,7 +14,8 @@ long parseNumber(const auto &value)
   }
 }
 
-void JacocoParser::on_tag_start(const std::vector<std::string> &tagXmlPath, const std::vector<simple_cpp::xml::Attribute> &attributes)
+void JacocoParser::on_tag_start(const std::vector<std::string> &tagXmlPath,
+  const std::vector<simple_cpp::xml::Attribute> &attributes)
 {
   spdlog::debug("start element {}", tagXmlPath.back());
   static const std::vector<std::string> searchPath{ "report", "counter" };

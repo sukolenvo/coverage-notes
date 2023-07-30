@@ -3,9 +3,9 @@
 #include "CLI/App.hpp"
 #include "CLI/Config.hpp"
 #include "CLI/Formatter.hpp"
-#include <simple_cpp_xml/exception.hpp>
-#include "spdlog/spdlog.h"
 #include <fmt/core.h>
+#include <simple_cpp_xml/exception.hpp>
+#include <spdlog/spdlog.h>
 
 #include "jacoco/JacocoParser.h"
 
