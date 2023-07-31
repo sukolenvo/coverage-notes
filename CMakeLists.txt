@@ -32,8 +32,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
-add_subdirectory(vendor/simple-cpp-xml)
-
 # Set the project name and language
 project(
     coverage_notes
@@ -86,6 +84,7 @@ if (BUILDING_MULTI_CONFIG)
 endif ()
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
+add_subdirectory(vendor/simple-cpp-xml)
 
 # defaulted_project_options sets recommended defaults and provides user and developer
 # modes and full GUI support for choosing options at configure time
