@@ -9,8 +9,8 @@ long parseNumber(const auto &value)
 {
   try {
     return std::stoi(value);
-  } catch (const std::invalid_argument &e) {
-    throw std::invalid_argument("Cannot convert to integer value: ");
+  } catch (const std::invalid_argument &) {
+    throw std::invalid_argument(std::string("Cannot convert to integer value: ") + value);
   }
 }
 
