@@ -99,30 +99,7 @@ add_subdirectory(vendor/simple-cpp-xml)
 # Initialize project_options variable related to this project
 # This overwrites `project_options` and sets `project_warnings`
 # uncomment the options to enable them:
-dynamic_project_options(
-    # Note: PCH is disabled by default in developer mode because these headers become
-    # globally included and they can mask other errors
-    PCH_HEADERS
-    <vector>
-    <string> # This is a list of headers to pre-compile, here are some common ones
-    #  fmt/core.h
-    ENABLE_CONAN
-    # CONAN_OPTIONS    # Extra options to pass to conan
-    # MSVC_WARNINGS    # Override the defaults for the MSVC warnings
-    # CLANG_WARNINGS   # Override the defaults for the CLANG warnings
-    # GCC_WARNINGS     # Override the defaults for the GCC warnings
-    CPPCHECK_OPTIONS
-    --enable=style,performance,warning,portability
-    --inline-suppr
-    # We cannot act on a bug/missing feature of cppcheck
-    --suppress=cppcheckError
-    --suppress=internalAstError
-    # if a file does not have an internalAstError, we get an unmatchedSuppression error
-    --suppress=unmatchedSuppression
-    --suppress=passedByValue
-    --suppress=syntaxError
-    --inconclusive
-)
+project_options(coverage-notes ENABLE_CONAN)
 
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
