@@ -1,4 +1,4 @@
-#include <fmt/core.h>
+#include <format>
 
 #include "CoverageInfo.h"
 void CoverageInfo::setInstructionMissed(const unsigned long value)
@@ -53,25 +53,25 @@ std::string CoverageInfo::print() const
 {
   std::string value{};
   if (instructionMissed > 0 || instructionCovered > 0) {
-    value.append(fmt::format("instruction: {:.2f}\n",
+    value.append(std::format("instruction: {:.2f}\n",
       static_cast<long double>(instructionCovered) / (instructionMissed + instructionCovered)));
   }
   if (lineMissed > 0 || lineCovered > 0) {
-    value.append(fmt::format("line: {:.2f}\n", static_cast<long double>(lineCovered) / (lineMissed + lineCovered)));
+    value.append(std::format("line: {:.2f}\n", static_cast<long double>(lineCovered) / (lineMissed + lineCovered)));
   }
   if (classMissed > 0 || classCovered > 0) {
-    value.append(fmt::format("class: {:.2f}\n", static_cast<long double>(classCovered) / (classCovered + classMissed)));
+    value.append(std::format("class: {:.2f}\n", static_cast<long double>(classCovered) / (classCovered + classMissed)));
   }
   if (branchMissed > 0 || branchCovered > 0) {
     value.append(
-      fmt::format("branch: {:.2f}\n", static_cast<long double>(branchCovered) / (branchCovered + branchMissed)));
+      std::format("branch: {:.2f}\n", static_cast<long double>(branchCovered) / (branchCovered + branchMissed)));
   }
   if (methodCovered > 0 || methodMissed > 0) {
     value.append(
-      fmt::format("method: {:.2f}\n", static_cast<long double>(methodCovered) / (methodCovered + methodMissed)));
+      std::format("method: {:.2f}\n", static_cast<long double>(methodCovered) / (methodCovered + methodMissed)));
   }
   if (complexityCovered > 0 || complexityMissed > 0) {
-    value.append(fmt::format(
+    value.append(std::format(
       "complexity: {:.2f}\n", static_cast<long double>(complexityCovered) / (complexityCovered + complexityMissed)));
   }
   return value;

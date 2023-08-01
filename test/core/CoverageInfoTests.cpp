@@ -25,7 +25,7 @@ line: 0.55
 class: 0.53
 branch: 0.57
 method: 0.53
-complexity: 0.1
+complexity: 0.10
 )";
   REQUIRE(coverageInfo.print() == expected);
 }
