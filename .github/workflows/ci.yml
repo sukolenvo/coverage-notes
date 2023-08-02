@@ -1,11 +1,8 @@
 name: ci
 on:
-  pull_request:
   release:
     types: [published]
   push:
-    tags:
-    branches:
 
 env:
   # Conan cache environment variables
@@ -38,7 +35,6 @@ jobs:
         os:
           - ubuntu-22.04
           - macos-12
-          - windows-2019
         compiler:
           # you can specify the version after `-` like "llvm-13.0.0".
           - llvm-14.0.0
@@ -48,9 +44,6 @@ jobs:
         build_type:
           - Release
           - Debug
-        developer_mode:
-          - ON
-          - OFF
 
         include:
           # Add appropriate variables for gcov version required. This will intentionally break
@@ -66,33 +59,27 @@ jobs:
             generator: "Unix Makefiles"
             build_type: Debug
             gcov_executable: gcov
-            developer_mode: On
 
           # Windows msvc builds
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Debug
-            developer_mode: On
 
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Release
-            developer_mode: On
 
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Debug
-            developer_mode: Off
 
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
             build_type: Release
-            developer_mode: Off
-            package_generator: ZIP
 
     steps:
       - name: Check for llvm version mismatches
@@ -103,13 +90,13 @@ jobs:
             core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
 
       - uses: actions/checkout@v3
-
+        with:
+          submodules: true
       - name: Setup Cache
         uses: ./.github/actions/setup_cache
         with:
           compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
-          developer_mode: ${{ matrix.developer_mode }}
           generator: ${{ matrix.generator }}
 
       - name: Setup Cpp
@@ -143,7 +130,7 @@ jobs:
         # has meaningful results
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }} -DGIT_SHA:STRING=${{ github.sha }}
+          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
 
       - name: Build
         # Execute the build.  You can specify a specific target with "--target <NAME>"
@@ -165,22 +152,15 @@ jobs:
         run: |
           OpenCppCoverage.exe --sources src* --modules tests.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}} --output-on-failure
 
-      - name: CPack
-        if: matrix.package_generator != ''
-        working-directory: ./build
-        run: |
-          cpack -C ${{matrix.build_type}} -G ${{matrix.package_generator}}
-
-      - name: Publish Tagged Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.package_generator != '' }}
-        with:
-          files: |
-            build/*-*${{ matrix.build_type }}*-*.*
-
       - name: Publish to codecov
         uses: codecov/codecov-action@v3
         with:
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build_type == 'Release' }}
+        with:
+          files: |
+            build/src/${{matrix.build_type}}/coverage-notes-*

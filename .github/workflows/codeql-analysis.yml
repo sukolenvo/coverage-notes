@@ -14,9 +14,6 @@ name: "CodeQL"
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ main, master, develop ]
   schedule:
     - cron: '38 0 * * 5'
 
@@ -49,19 +46,17 @@ jobs:
           - "Ninja Multi-Config"
         build_type:
           - Debug
-        developer_mode:
-          - OFF
 
 
     steps:
     - uses: actions/checkout@v3
-
+      with:
+        submodules: true
     - name: Setup Cache
       uses: ./.github/actions/setup_cache
       with:
         compiler: ${{ matrix.compiler }}
         build_type: ${{ matrix.build_type }}
-        developer_mode: ${{ matrix.developer_mode }}
         generator: ${{ matrix.generator }}
 
 
@@ -84,7 +79,7 @@ jobs:
       # has meaningful results
     - name: Configure CMake
       run: |
-        cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DENABLE_DEVELOPER_MODE:BOOL=${{matrix.developer_mode}} -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.build_type == 'Debug' }}
+        cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=OFF
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL

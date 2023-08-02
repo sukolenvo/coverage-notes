@@ -1,10 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
+#include <simple_cpp_xml/exception.hpp>
 
 #include "jacoco/JacocoParser.h"
-
-
-#include <exception>
-#include <iostream>
 
 namespace {
 
@@ -24,8 +21,7 @@ TEST_CASE("JacocoParserTests:all", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  parser.parse_memory(xml);
+  parser.parse(xml);
   CoverageInfo expected;
   expected.setInstructionMissed(1);
   expected.setInstructionCovered(2);
@@ -52,8 +48,7 @@ TEST_CASE("JacocoParserTests:malformed", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse(xml), simple_cpp::xml::ParseError);
 }
 
 TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
@@ -67,8 +62,7 @@ TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  parser.parse_memory(xml);
+  parser.parse(xml);
   CoverageInfo expected;
   expected.setInstructionMissed(1);
   expected.setInstructionCovered(2);
@@ -85,8 +79,7 @@ TEST_CASE("JacocoParserTests:negative_counter", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse(xml), simple_cpp::xml::ParseError);
 }
 
 TEST_CASE("JacocoParserTests:parse_integer_error", "[jacoco]")
@@ -99,8 +92,7 @@ TEST_CASE("JacocoParserTests:parse_integer_error", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  REQUIRE_THROWS_AS(parser.parse_memory(xml), xmlpp::exception);
+  REQUIRE_THROWS_AS(parser.parse(xml), simple_cpp::xml::ParseError);
 }
 
 TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
@@ -113,8 +105,7 @@ TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  parser.parse_memory(xml);
+  parser.parse(xml);
   CoverageInfo expected;
   expected.setInstructionMissed(1);
   expected.setInstructionCovered(2);
@@ -131,8 +122,7 @@ TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  parser.parse_memory(xml);
+  parser.parse(xml);
   CoverageInfo expected;
   expected.setInstructionCovered(2);
   REQUIRE(parser.getCoverageInfo() == expected);
@@ -148,8 +138,7 @@ TEST_CASE("JacocoParserTests:no_values", "[jacoco]")
 </report>
 )";
   JacocoParser parser;
-  parser.set_throw_messages(true);
-  parser.parse_memory(xml);
+  parser.parse(xml);
   CoverageInfo expected;
   REQUIRE(parser.getCoverageInfo() == expected);
 }

@@ -17,7 +17,7 @@ TEST_CASE("CoverageInfo:all", "[core]")
   coverageInfo.setMethodCovered(8);
   coverageInfo.setClassMissed(9);
   coverageInfo.setClassCovered(10);
-  coverageInfo.setComplexityMissed(110);
+  coverageInfo.setComplexityMissed(68);
   coverageInfo.setComplexityCovered(12);
 
   const auto expected = R"(instruction: 0.67
@@ -25,7 +25,7 @@ line: 0.55
 class: 0.53
 branch: 0.57
 method: 0.53
-complexity: 0.1
+complexity: 0.15
 )";
   REQUIRE(coverageInfo.print() == expected);
 }
