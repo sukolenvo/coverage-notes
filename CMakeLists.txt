@@ -16,19 +16,9 @@ endif()
 # Set the project name and language
 project(
     coverage_notes
-    VERSION 0.0.1
-    DESCRIPTION ""
+    VERSION 0.1
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
-    LANGUAGES CXX C)
-
-set(GIT_SHA
-    "Unknown"
-    CACHE STRING "SHA this build was generated from")
-string(
-    SUBSTRING "${GIT_SHA}"
-    0
-    8
-    GIT_SHORT_SHA)
+    LANGUAGES CXX)
 
 get_property(BUILDING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if (BUILDING_MULTI_CONFIG)
@@ -79,3 +69,4 @@ enable_testing()
 include(CTest)
 add_subdirectory(vendor/Catch2)
 add_subdirectory(test)
+add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml)

@@ -161,3 +161,9 @@ jobs:
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ./build/coverage.xml
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build_type == 'Release' }}
+        with:
+          files: |
+            build/src/${{matrix.build_type}}/coverage-notes-*
