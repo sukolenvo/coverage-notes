@@ -16,7 +16,7 @@ endif()
 # Set the project name and language
 project(
     coverage_notes
-    VERSION 0.1.1
+    VERSION 0.1.2
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
     LANGUAGES CXX)
 

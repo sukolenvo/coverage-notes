@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 
 #include "CLI/App.hpp"
@@ -7,14 +8,6 @@
 #include <spdlog/spdlog.h>
 
 #include "jacoco/JacocoParser.h"
-
-template<> struct fmt::formatter<CoverageInfo> : fmt::formatter<std::string>
-{
-  auto format(CoverageInfo coverageInfo, format_context &ctx) -> decltype(ctx.out())
-  {
-    return format_to(ctx.out(), "{}", coverageInfo.print());
-  }
-};
 
 auto readFile(auto path)
 {
@@ -42,7 +35,7 @@ int main(int argc, const char **argv)
   try {
     JacocoParser parser;
     parser.parse(content);
-    spdlog::info("Parsed coverage: \n{}", parser.getCoverageInfo());
+    std::cout << parser.getCoverageInfo().print();
   } catch (const simple_cpp::xml::ParseError &ex) {
     spdlog::error("Failed to parse xml {}", ex.what());
     return EXIT_FAILURE;
