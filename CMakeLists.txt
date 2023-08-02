@@ -9,17 +9,6 @@ set(CMAKE_CXX_STANDARD 20)
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Note: by default ENABLE_DEVELOPER_MODE is True
-# This means that all analysis (sanitizers, static analysis)
-# is enabled and all warnings are treated as errors
-# if you want to switch this behavior, change TRUE to FALSE
-set(ENABLE_DEVELOPER_MODE
-    TRUE
-    CACHE BOOL "Enable 'developer mode'")
-
-# Change this to false if you want to disable warnings_as_errors in developer mode
-set(OPT_WARNINGS_AS_ERRORS_DEVELOPER_DEFAULT TRUE)
-
 include(FetchContent)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
@@ -39,18 +28,6 @@ project(
     DESCRIPTION ""
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
     LANGUAGES CXX C)
-
-# This variable is set by project() in CMake 3.21+
-string(
-    COMPARE EQUAL
-    "${CMAKE_SOURCE_DIR}"
-    "${PROJECT_SOURCE_DIR}"
-    PROJECT_IS_TOP_LEVEL)
-if (PROJECT_IS_TOP_LEVEL)
-  # Consider the CTest module, which creates targets and options!
-  # Only needed if you want to enable submissions to a CDash server.
-  include(CTest)
-endif ()
 
 set(GIT_SHA
     "Unknown"
@@ -85,6 +62,7 @@ endif ()
 
 include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 add_subdirectory(vendor/simple-cpp-xml)
+add_subdirectory(vendor/CLI11)
 
 # defaulted_project_options sets recommended defaults and provides user and developer
 # modes and full GUI support for choosing options at configure time
@@ -113,6 +91,8 @@ add_subdirectory(src)
 option(ENABLE_TESTING "Enable the tests" ${PROJECT_IS_TOP_LEVEL})
 if (ENABLE_TESTING)
   enable_testing()
+  include(CTest)
+  add_subdirectory(vendor/Catch2)
   add_subdirectory(test)
 endif ()
 
