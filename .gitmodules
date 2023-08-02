@@ -7,3 +7,9 @@
 [submodule "vendor/CLI11"]
 	path = vendor/CLI11
 	url = git@github.com:CLIUtils/CLI11.git
+[submodule "vendor/spdlog"]
+	path = vendor/spdlog
+	url = git@github.com:gabime/spdlog.git
+[submodule "vendor/fmt"]
+	path = vendor/fmt
+	url = git@github.com:fmtlib/fmt.git

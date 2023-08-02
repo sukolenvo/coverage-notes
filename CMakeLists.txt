@@ -9,17 +9,9 @@ set(CMAKE_CXX_STANDARD 20)
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include(FetchContent)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
 endif()
-
-set(PROJECT_OPTIONS_VERSION "v0.29.0")
-FetchContent_Declare(
-    _project_options
-    URL https://github.com/aminya/project_options/archive/refs/tags/${PROJECT_OPTIONS_VERSION}.zip)
-FetchContent_MakeAvailable(_project_options)
-include(${_project_options_SOURCE_DIR}/Index.cmake)
 
 # Set the project name and language
 project(
@@ -60,41 +52,22 @@ if (BUILDING_MULTI_CONFIG)
   endif ()
 endif ()
 
-include(${_project_options_SOURCE_DIR}/src/DynamicProjectOptions.cmake)
 add_subdirectory(vendor/simple-cpp-xml)
 add_subdirectory(vendor/CLI11)
+add_subdirectory(vendor/fmt)
+add_subdirectory(vendor/spdlog)
 
-# defaulted_project_options sets recommended defaults and provides user and developer
-# modes and full GUI support for choosing options at configure time
-
-# for more flexibility, look into project_options() macro
-
-# Any default can be overridden
-# set(<feature_name>_DEFAULT <value>) - set default for both user and developer modes
-# set(<feature_name>_DEVELOPER_DEFAULT <value>) - set default for developer mode
-# set(<feature_name>_USER_DEFAULT <value>) - set default for user mode
-
-# Initialize project_options variable related to this project
-# This overwrites `project_options` and sets `project_warnings`
-# uncomment the options to enable them:
-project_options(coverage-notes ENABLE_CONAN)
-
+add_library(project_options INTERFACE)
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
-
-add_library(coverage_notes::project_options INTERFACE IMPORTED)
-add_library(coverage_notes::project_warnings INTERFACE IMPORTED)
+add_library(project_warnings INTERFACE)
 
 # Adding the src:
 add_subdirectory(src)
 
-# Adding the tests:
-option(ENABLE_TESTING "Enable the tests" ${PROJECT_IS_TOP_LEVEL})
-if (ENABLE_TESTING)
-  enable_testing()
-  include(CTest)
-  add_subdirectory(vendor/Catch2)
-  add_subdirectory(test)
-endif ()
+enable_testing()
+include(CTest)
+add_subdirectory(vendor/Catch2)
+add_subdirectory(test)
 
 # If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
 # so that it behaves well with MSVC's debugger, and we can run the target from visual studio
@@ -106,9 +79,3 @@ endif ()
 
 # set the startup project for the "play" button in MSVC
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT aoc)
-
-if (CMAKE_SKIP_INSTALL_RULES)
-  return()
-elseif (NOT PROJECT_IS_TOP_LEVEL)
-  return()
-endif ()
