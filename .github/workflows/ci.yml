@@ -1,11 +1,8 @@
 name: ci
 on:
-  pull_request:
   release:
     types: [published]
   push:
-    tags:
-    branches:
 
 env:
   # Conan cache environment variables
