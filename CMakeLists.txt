@@ -59,6 +59,17 @@ add_subdirectory(vendor/spdlog)
 
 add_library(project_options INTERFACE)
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+if (MSVC)
+  target_compile_options(project_options INTERFACE /W4)
+  if (COVERAGE_NOTES_WARNINGS_AS_ERRORS)
+    target_compile_options(project_options INTERFACE /WX)
+  endif ()
+else ()
+  target_compile_options(project_options INTERFACE -Wall -Wextra -Wpedantic)
+  if (COVERAGE_NOTES_WARNINGS_AS_ERRORS)
+    target_compile_options(project_options INTERFACE -Werror)
+  endif ()
+endif ()
 add_library(project_warnings INTERFACE)
 
 # Adding the src:
