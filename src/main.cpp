@@ -119,7 +119,7 @@ void update_pull(simple_cpp::github_rest::Client &client,
   }
   spdlog::info("Updating PR {}. Base: {}, head: {}", pull.number, baseCoverage, headCoverage);
   static const std::string marker = "\n\nCoverage info (don't edit past this line):\n";
-  std::string body = pull.body;
+  std::string body = pull.body.value_or("");
   auto markerPos = body.find(marker);
   if (markerPos != std::string::npos) {
     body.erase(body.find(marker));
