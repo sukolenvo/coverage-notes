@@ -3,6 +3,9 @@ on:
   release:
     types: [published]
   push:
+    paths-ignore:
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/windows.yml'
 
 env:
   # Conan cache environment variables
@@ -11,14 +14,7 @@ env:
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
 
 jobs:
-  lint:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@v3
-      - name: verify format
-        run: make clang-format-check
   test:
-    needs: lint
     runs-on: macos-13
     strategy:
       fail-fast: false

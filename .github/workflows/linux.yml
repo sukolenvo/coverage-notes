@@ -3,7 +3,9 @@ on:
   release:
     types: [ published ]
   push:
-
+    paths-ignore:
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
 env:
   # Conan cache environment variables
   CONAN_SYSREQUIRES_MODE: enabled
