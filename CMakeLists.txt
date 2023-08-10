@@ -46,7 +46,7 @@ include(FetchContent)
 FetchContent_Declare(
     XML
     GIT_REPOSITORY https://github.com/sukolenvo/simple-cpp-xml.git
-    GIT_TAG v0.1
+    GIT_TAG 3be703fac9211e4bd1c63d8bd07f7802d8dfe80b
     GIT_SHALLOW TRUE
 )
 FetchContent_Declare(
