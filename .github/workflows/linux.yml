@@ -40,7 +40,7 @@ jobs:
       - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
+          cmake -S . -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF
         env:
           CC: ${{matrix.compiler.c}}
           CXX: ${{matrix.compiler.cpp}}
