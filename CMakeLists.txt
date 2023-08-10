@@ -42,8 +42,27 @@ if (BUILDING_MULTI_CONFIG)
   endif ()
 endif ()
 
-add_subdirectory(vendor/simple-cpp-xml)
-add_subdirectory(vendor/CLI11)
+include(FetchContent)
+FetchContent_Declare(
+    XML
+    GIT_REPOSITORY https://github.com/sukolenvo/simple-cpp-xml.git
+    GIT_TAG 3be703fac9211e4bd1c63d8bd07f7802d8dfe80b
+    GIT_SHALLOW TRUE
+)
+FetchContent_Declare(
+    GithubRest
+    GIT_REPOSITORY https://github.com/sukolenvo/simple-cpp-github-rest.git
+    GIT_TAG v0.2
+    GIT_SHALLOW TRUE
+)
+FetchContent_Declare(
+    CLI11
+    GIT_REPOSITORY https://github.com/CLIUtils/CLI11.git
+    GIT_TAG v2.3.2
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(XML GithubRest CLI11)
+
 add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/spdlog)
 
@@ -69,4 +88,4 @@ enable_testing()
 include(CTest)
 add_subdirectory(vendor/Catch2)
 add_subdirectory(test)
-add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml)
+add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml print)
