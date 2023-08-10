@@ -1,0 +1,58 @@
+name: ci
+on:
+  release:
+    types: [ published ]
+  push:
+
+env:
+  # Conan cache environment variables
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: verify format
+        run: make clang-format-check
+  test:
+    needs: lint
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - c: gcc-12
+            cpp: g++-12
+          - c: clang-14
+            cpp: clang++-14
+        build_type:
+          - Release
+          - Debug
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Configure CMake
+        run: |
+          cmake -S . -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
+        env:
+          CC: ${{matrix.compiler.c}}
+          CXX: ${{matrix.compiler.cpp}}
+      - name: Build
+        run: |
+          cmake --build ./build --config ${{matrix.build_type}}
+      - name: Test and coverage
+        working-directory: ./build
+        run: |
+          ctest -C ${{matrix.build_type}} --output-on-failure
+        # TODO: gcovr -j ${{env.nproc}} --delete --root ../src/ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}' --verbose
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build_type == 'Release' && startsWith(matrix.compiler.c, 'gcc') }}
+        with:
+          files: |
+            build/src/${{matrix.build_type}}/coverage-notes-*

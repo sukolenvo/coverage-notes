@@ -1,12 +1,6 @@
-[submodule "vendor/simple-cpp-xml"]
-	path = vendor/simple-cpp-xml
-	url = git@github.com:sukolenvo/simple-cpp-xml.git
 [submodule "vendor/Catch2"]
 	path = vendor/Catch2
 	url = git@github.com:catchorg/Catch2.git
-[submodule "vendor/CLI11"]
-	path = vendor/CLI11
-	url = git@github.com:CLIUtils/CLI11.git
 [submodule "vendor/spdlog"]
 	path = vendor/spdlog
 	url = git@github.com:gabime/spdlog.git
