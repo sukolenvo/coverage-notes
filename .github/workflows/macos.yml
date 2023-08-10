@@ -22,8 +22,8 @@ jobs:
         compiler:
           - c: gcc-12
             cpp: g++-12
-          - c: clang-14
-            cpp: clang++-14
+          - c: clang
+            cpp: clang++
         build_type:
           - Release
           - Debug

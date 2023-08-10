@@ -33,7 +33,7 @@ jobs:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
       - name: Configure CMake
-        run: cmake -S . -B ./build -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
+        run: cmake -S . -B ./build -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF
       - name: Build
         run: cmake --build ./build --config ${{matrix.build_type}}
 
