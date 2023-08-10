@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <cstdlib>
 #include <iostream>
 #include <optional>
@@ -37,7 +39,6 @@ auto readFile(auto path)
   }
 }
 
-#define _CRT_SECURE_NO_WARNINGS
 std::string read_env(const std::string &name)
 {
   const char *value = std::getenv(name.c_str());

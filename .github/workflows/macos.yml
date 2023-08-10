@@ -38,7 +38,7 @@ jobs:
         uses: aminya/setup-cpp@v0.26.2
         if: ${{ matrix.compiler.c == 'clang'}}
         with:
-          compiler: llvm-14
+          compiler: llvm-15
       - name: Configure CMake
         run: |
           cmake -S . -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
