@@ -58,7 +58,7 @@ std::optional<std::string> read_base_tree(simple_cpp::github_rest::Client &clien
       throw std::runtime_error(std::string("Expected reference to point to commit, but got :") + reference.object.type);
     }
     commitSha = reference.object.sha;
-  } catch (const simple_cpp::github_rest::GithubRestException &ex) {
+  } catch (const simple_cpp::github_rest::GithubRestException &) {
     // TODO check response code is 404
   }
   if (commitSha.empty()) {
