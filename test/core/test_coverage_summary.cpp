@@ -53,9 +53,9 @@ complexity: 0.15
 @@ Coverage info. Don't edit past this section @@
 + instruction: 68% (+1)
 - line: 45% (-10)
-  class: 52%
+  class: 53%
   branch: 57%
-  method: 52%
+  method: 53%
   complexity: 15%
 ```)");
 }

@@ -1,3 +1,4 @@
+#include <cmath>
 #include <string>
 
 #include <spdlog/spdlog.h>
@@ -97,8 +98,8 @@ bool CoverageSummary::empty() const
 
 std::string formatDiff(const std::string &type, long double base, long double head)
 {
-  int basePercent = static_cast<int>(base * 100);
-  int headPercent = static_cast<int>(head * 100);
+  int basePercent = static_cast<int>(std::roundl(base * 100));
+  int headPercent = static_cast<int>(std::roundl(head * 100));
   if (basePercent == headPercent) {
     return fmt::format("  {}: {}%\n", type, basePercent);
   }

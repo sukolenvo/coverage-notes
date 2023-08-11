@@ -9,9 +9,9 @@ set(CMAKE_CXX_STANDARD 20)
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
-endif()
+endif ()
 
 # Set the project name and language
 project(
@@ -61,10 +61,13 @@ FetchContent_Declare(
     GIT_TAG v2.3.2
     GIT_SHALLOW TRUE
 )
-FetchContent_MakeAvailable(XML GithubRest CLI11)
-
-add_subdirectory(vendor/fmt)
-add_subdirectory(vendor/spdlog)
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.12.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(XML GithubRest CLI11 spdlog)
 
 add_library(project_options INTERFACE)
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
