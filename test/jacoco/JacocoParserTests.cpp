@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <simple_cpp_xml/exception.hpp>
 
-#include "jacoco/JacocoParser.h"
+#include "jacoco/jacoco_parser.hpp"
 
 namespace {
 

@@ -1,11 +1,11 @@
-#ifndef COVERAGE_NOTES_JACOCOPARSER_H
-#define COVERAGE_NOTES_JACOCOPARSER_H
+#ifndef COVERAGE_NOTES_JACOCO_PARSER_HPP
+#define COVERAGE_NOTES_JACOCO_PARSER_HPP
 
 #include <vector>
 
 #include "simple_cpp_xml/parser.hpp"
 
-#include "core/CoverageInfo.h"
+#include "core/coverage_info.hpp"
 
 class JacocoParser : public simple_cpp::xml::Parser
 {
@@ -30,4 +30,4 @@ protected:
 };
 
 
-#endif // COVERAGE_NOTES_JACOCOPARSER_H
+#endif // COVERAGE_NOTES_JACOCO_PARSER_HPP

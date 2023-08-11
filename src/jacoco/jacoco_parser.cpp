@@ -3,7 +3,7 @@
 
 #include "spdlog/spdlog.h"
 
-#include "JacocoParser.h"
+#include "jacoco_parser.hpp"
 
 long parseNumber(const auto &value)
 {
@@ -58,23 +58,23 @@ void JacocoParser::saveCounter(const Counter &counter)
     return;
   }
   if (counter.type == type_instruction) {
-    coverageInfo.setInstructionMissed(counter.missed);
-    coverageInfo.setInstructionCovered(counter.covered);
+    coverageInfo.instructionMissed = counter.missed;
+    coverageInfo.instructionCovered = counter.covered;
   } else if (counter.type == type_branch) {
-    coverageInfo.setBranchMissed(counter.missed);
-    coverageInfo.setBranchCovered(counter.covered);
+    coverageInfo.branchMissed = counter.missed;
+    coverageInfo.branchCovered = counter.covered;
   } else if (counter.type == type_line) {
-    coverageInfo.setLineMissed(counter.missed);
-    coverageInfo.setLineCovered(counter.covered);
+    coverageInfo.lineMissed = counter.missed;
+    coverageInfo.lineCovered = counter.covered;
   } else if (counter.type == type_class) {
-    coverageInfo.setClassMissed(counter.missed);
-    coverageInfo.setClassCovered(counter.covered);
+    coverageInfo.classMissed = counter.missed;
+    coverageInfo.classCovered = counter.covered;
   } else if (counter.type == type_method) {
-    coverageInfo.setMethodMissed(counter.missed);
-    coverageInfo.setMethodCovered(counter.covered);
+    coverageInfo.methodMissed = counter.missed;
+    coverageInfo.methodCovered = counter.covered;
   } else if (counter.type == type_complexity) {
-    coverageInfo.setComplexityMissed(counter.missed);
-    coverageInfo.setComplexityCovered(counter.covered);
+    coverageInfo.complexityMissed = counter.missed;
+    coverageInfo.complexityCovered = counter.covered;
   } else {
     spdlog::warn("Ignoring unknown counter {}", counter.type);
   }

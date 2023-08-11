@@ -16,7 +16,7 @@ endif()
 # Set the project name and language
 project(
     coverage_notes
-    VERSION 0.2.3
+    VERSION 0.3
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
     LANGUAGES CXX)
 
@@ -86,6 +86,12 @@ add_subdirectory(src)
 
 enable_testing()
 include(CTest)
-add_subdirectory(vendor/Catch2)
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG v3.4.0
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(Catch2)
 add_subdirectory(test)
 add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml print)

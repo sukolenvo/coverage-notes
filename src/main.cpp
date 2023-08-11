@@ -25,7 +25,8 @@
 #include <simple_cpp_xml/exception.hpp>
 #include <spdlog/spdlog.h>
 
-#include "jacoco/JacocoParser.h"
+#include "core/coverage_summary.hpp"
+#include "jacoco/jacoco_parser.hpp"
 
 auto readFile(auto path)
 {
@@ -77,7 +78,9 @@ void create_note(simple_cpp::github_rest::Client &client,
 {
   const auto base_tree = read_base_tree(client, ref);
   const simple_cpp::github_rest::CreateTreeRequestBody createTreeRequestBody{
-    .tree = { { .path = commitSha, .mode = simple_cpp::github_rest::MODE_FILE, .content = coverage.print() } },
+    .tree = { { .path = commitSha,
+      .mode = simple_cpp::github_rest::MODE_FILE,
+      .content = CoverageSummary(coverage).print() } },
     .base_tree = base_tree
   };
   simple_cpp::github_rest::CreateTreeRequest createTreeRequest{ createTreeRequestBody };
@@ -99,12 +102,12 @@ void create_note(simple_cpp::github_rest::Client &client,
   }
 }
 
-std::string
+CoverageSummary
   get_coverage_info(simple_cpp::github_rest::Client &client, const std::string &commitSha, const std::string &notesRef)
 {
   simple_cpp::github_rest::GetRepositoryContentRequest getRepositoryContentRequest{ commitSha, notesRef };
   const auto content = getRepositoryContentRequest.execute(client);
-  return content.parse_content();
+  return CoverageSummary(content.parse_content());
 }
 
 void update_pull(simple_cpp::github_rest::Client &client,
@@ -114,24 +117,21 @@ void update_pull(simple_cpp::github_rest::Client &client,
   const auto baseCoverage = get_coverage_info(client, pull.base.sha, notesRef);
   const auto headCoverage = get_coverage_info(client, pull.head.sha, notesRef);
   if (baseCoverage.empty() || headCoverage.empty()) {
-    spdlog::warn(
-      "Can't update PR {}. Coverage info missing. Base: {}, head: {}", pull.number, baseCoverage, headCoverage);
+    spdlog::warn("Can't update PR {}. Coverage info missing. Base: {}, head: {}",
+      pull.number,
+      baseCoverage.print(),
+      headCoverage.print());
     return;
   }
-  spdlog::info("Updating PR {}. Base: {}, head: {}", pull.number, baseCoverage, headCoverage);
-  static const std::string marker = "\n\nCoverage info (don't edit past this line):\n";
+  const auto diff = baseCoverage.diff(headCoverage);
+  spdlog::info("Updating PR {}. Diff: {}", pull.number, diff);
   std::string body = pull.body.value_or("");
   body.erase(std::remove(body.begin(), body.end(), '\r'), body.cend());
-  auto markerPos = body.find(marker);
+  auto markerPos = body.find(diff.substr(0, 20));
   if (markerPos != std::string::npos) {
-    body.erase(body.find(marker));
+    body.erase(markerPos);
   }
-  body += marker;
-  body += "Base:\n";
-  body += baseCoverage;
-  body += "\n";
-  body += "Head:\n";
-  body += headCoverage;
+  body += diff;
   const simple_cpp::github_rest::UpdatePullRequestBody updatePullRequestBody{ .body = body };
   simple_cpp::github_rest::UpdatePullRequest updatePullRequest{ pull.number, updatePullRequestBody };
   updatePullRequest.execute(client);
@@ -172,7 +172,7 @@ int main(int argc, const char **argv)
       const auto content = readFile(filename);
       JacocoParser parser;
       parser.parse(content);
-      std::cout << parser.getCoverageInfo().print();
+      std::cout << CoverageSummary(parser.getCoverageInfo()).print();
       return EXIT_SUCCESS;
     }
 
