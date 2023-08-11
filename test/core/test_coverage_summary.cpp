@@ -4,7 +4,7 @@
 
 namespace {
 
-TEST_CASE("CoverageInfo:all", "[core]")
+TEST_CASE("CoverageSummary:all", "[core]")
 {
   CoverageInfo coverageInfo;
   coverageInfo.instructionMissed = 1;
@@ -32,7 +32,7 @@ complexity: 0.15
   REQUIRE(CoverageSummary{ summary.print() }.print() == expected);
 }
 
-TEST_CASE("CoverageInfo:diff", "[core]")
+TEST_CASE("CoverageSummary:diff", "[core]")
 {
   CoverageSummary base{ R"(instruction: 0.67
 line: 0.55
@@ -50,7 +50,7 @@ complexity: 0.15
 )" };
 
   REQUIRE(base.diff(head) == R"(```diff
-@@ Coverage info. Don't edit past this line @@
+@@ Coverage info. Don't edit past this section @@
 + instruction: 68% (+1)
 - line: 45% (-10)
   class: 52%
@@ -60,7 +60,7 @@ complexity: 0.15
 ```)");
 }
 
-TEST_CASE("CoverageInfo:empty", "[core]")
+TEST_CASE("CoverageSummary:empty", "[core]")
 {
   CoverageSummary summary{ R"(instruction: 0.67
 line: 0.55
@@ -75,7 +75,7 @@ complexity: 0.15
   REQUIRE(empty.empty());
 }
 
-TEST_CASE("CoverageInfo:full_coverage", "[core]")
+TEST_CASE("CoverageSummary:full_coverage", "[core]")
 {
   CoverageInfo coverageInfo;
   coverageInfo.instructionCovered = 2;
@@ -96,7 +96,7 @@ complexity: 1.00
   REQUIRE(summary.print() == expected);
 }
 
-TEST_CASE("CoverageInfo:no_coverage", "[core]")
+TEST_CASE("CoverageSummary:no_coverage", "[core]")
 {
   CoverageInfo coverageInfo;
   coverageInfo.instructionMissed = 1;
@@ -107,14 +107,7 @@ TEST_CASE("CoverageInfo:no_coverage", "[core]")
   coverageInfo.complexityMissed = 110;
   CoverageSummary summary{ coverageInfo };
 
-  const auto expected = R"(instruction: 0.00
-line: 0.00
-class: 0.00
-branch: 0.00
-method: 0.00
-complexity: 0.00
-)";
-  REQUIRE(summary.print() == expected);
+  REQUIRE(summary.print().empty());
 }
 
 } // namespace

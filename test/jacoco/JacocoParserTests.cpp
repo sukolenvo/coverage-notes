@@ -23,18 +23,18 @@ TEST_CASE("JacocoParserTests:all", "[jacoco]")
   JacocoParser parser;
   parser.parse(xml);
   CoverageInfo expected;
-  expected.setInstructionMissed(1);
-  expected.setInstructionCovered(2);
-  expected.setBranchMissed(3);
-  expected.setBranchCovered(4);
-  expected.setLineMissed(5);
-  expected.setLineCovered(6);
-  expected.setComplexityMissed(7);
-  expected.setComplexityCovered(8);
-  expected.setMethodMissed(9);
-  expected.setMethodCovered(10);
-  expected.setClassMissed(11);
-  expected.setClassCovered(12);
+  expected.instructionMissed = 1;
+  expected.instructionCovered = 2;
+  expected.branchMissed = 3;
+  expected.branchCovered = 4;
+  expected.lineMissed = 5;
+  expected.lineCovered = 6;
+  expected.complexityMissed = 7;
+  expected.complexityCovered = 8;
+  expected.methodMissed = 9;
+  expected.methodCovered = 10;
+  expected.classMissed = 11;
+  expected.classCovered = 12;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 
@@ -64,8 +64,8 @@ TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
   JacocoParser parser;
   parser.parse(xml);
   CoverageInfo expected;
-  expected.setInstructionMissed(1);
-  expected.setInstructionCovered(2);
+  expected.instructionMissed = 1;
+  expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 
@@ -107,8 +107,8 @@ TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
   JacocoParser parser;
   parser.parse(xml);
   CoverageInfo expected;
-  expected.setInstructionMissed(1);
-  expected.setInstructionCovered(2);
+  expected.instructionMissed = 1;
+  expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 
@@ -124,7 +124,7 @@ TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
   JacocoParser parser;
   parser.parse(xml);
   CoverageInfo expected;
-  expected.setInstructionCovered(2);
+  expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 
