@@ -131,6 +131,9 @@ void update_pull(simple_cpp::github_rest::Client &client,
   if (markerPos != std::string::npos) {
     body.erase(markerPos);
   }
+  if (!body.empty() && body.back() != '\n') {
+    body += '\n';
+  }
   body += diff;
   const simple_cpp::github_rest::UpdatePullRequestBody updatePullRequestBody{ .body = body };
   simple_cpp::github_rest::UpdatePullRequest updatePullRequest{ pull.number, updatePullRequestBody };
