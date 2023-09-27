@@ -38,34 +38,6 @@ CoverageSummary::CoverageSummary(const std::string &printed)
   }
 }
 
-CoverageSummary::CoverageSummary(const CoverageInfo &coverageInfo)
-{
-  if (coverageInfo.instructionMissed > 0 || coverageInfo.instructionCovered > 0) {
-    instructionCoverage = static_cast<long double>(coverageInfo.instructionCovered)
-                          / (coverageInfo.instructionMissed + coverageInfo.instructionCovered);
-  }
-  if (coverageInfo.lineMissed > 0 || coverageInfo.lineCovered > 0) {
-    lineCoverage =
-      static_cast<long double>(coverageInfo.lineCovered) / (coverageInfo.lineMissed + coverageInfo.lineCovered);
-  }
-  if (coverageInfo.classCovered > 0 || coverageInfo.classMissed > 0) {
-    classCoverage =
-      static_cast<long double>(coverageInfo.classCovered) / (coverageInfo.classCovered + coverageInfo.classMissed);
-  }
-  if (coverageInfo.branchCovered > 0 || coverageInfo.branchMissed > 0) {
-    branchCoverage =
-      static_cast<long double>(coverageInfo.branchCovered) / (coverageInfo.branchCovered + coverageInfo.branchMissed);
-  }
-  if (coverageInfo.methodCovered > 0 || coverageInfo.methodMissed > 0) {
-    methodCoverage =
-      static_cast<long double>(coverageInfo.methodCovered) / (coverageInfo.methodCovered + coverageInfo.methodMissed);
-  }
-  if (coverageInfo.complexityCovered > 0 || coverageInfo.complexityMissed > 0) {
-    complexityCoverage = static_cast<long double>(coverageInfo.complexityCovered)
-                         / (coverageInfo.complexityCovered + coverageInfo.complexityMissed);
-  }
-}
-
 std::string CoverageSummary::print() const
 {
   std::string value{};

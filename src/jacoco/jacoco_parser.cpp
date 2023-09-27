@@ -80,7 +80,7 @@ void JacocoParser::saveCounter(const Counter &counter)
   }
 }
 
-CoverageInfo JacocoParser::getCoverageInfo() const
+JacocoCoverage JacocoParser::getCoverageInfo() const
 {
   return coverageInfo;
 }

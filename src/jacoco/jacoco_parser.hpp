@@ -5,12 +5,12 @@
 
 #include "simple_cpp_xml/parser.hpp"
 
-#include "core/coverage_info.hpp"
+#include "jacoco_coverage.hpp"
 
 class JacocoParser : public simple_cpp::xml::Parser
 {
 private:
-  CoverageInfo coverageInfo;
+  JacocoCoverage coverageInfo;
   struct Counter
   {
     std::string type{};
@@ -22,7 +22,7 @@ private:
 public:
   JacocoParser() = default;
   ~JacocoParser() override = default;
-  [[nodiscard]] CoverageInfo getCoverageInfo() const;
+  [[nodiscard]] JacocoCoverage getCoverageInfo() const;
 
 protected:
   void on_tag_start(const std::vector<std::string> &tagXmlPath,

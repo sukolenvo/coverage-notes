@@ -22,7 +22,7 @@ TEST_CASE("JacocoParserTests:all", "[jacoco]")
 )";
   JacocoParser parser;
   parser.parse(xml);
-  CoverageInfo expected;
+  JacocoCoverage expected;
   expected.instructionMissed = 1;
   expected.instructionCovered = 2;
   expected.branchMissed = 3;
@@ -63,7 +63,7 @@ TEST_CASE("JacocoParserTests:unrecognized_counter", "[jacoco]")
 )";
   JacocoParser parser;
   parser.parse(xml);
-  CoverageInfo expected;
+  JacocoCoverage expected;
   expected.instructionMissed = 1;
   expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
@@ -106,7 +106,7 @@ TEST_CASE("JacocoParserTests:unrecognised_attribute", "[jacoco]")
 )";
   JacocoParser parser;
   parser.parse(xml);
-  CoverageInfo expected;
+  JacocoCoverage expected;
   expected.instructionMissed = 1;
   expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
@@ -123,7 +123,7 @@ TEST_CASE("JacocoParserTests:no_missing", "[jacoco]")
 )";
   JacocoParser parser;
   parser.parse(xml);
-  CoverageInfo expected;
+  JacocoCoverage expected;
   expected.instructionCovered = 2;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
@@ -139,7 +139,7 @@ TEST_CASE("JacocoParserTests:no_values", "[jacoco]")
 )";
   JacocoParser parser;
   parser.parse(xml);
-  CoverageInfo expected;
+  JacocoCoverage expected;
   REQUIRE(parser.getCoverageInfo() == expected);
 }
 

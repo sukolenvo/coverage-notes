@@ -16,7 +16,7 @@ endif ()
 # Set the project name and language
 project(
     coverage_notes
-    VERSION 0.3.1
+    VERSION 0.4
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
     LANGUAGES CXX)
 
@@ -97,4 +97,5 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 add_subdirectory(test)
-add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml print)
+add_test(NAME coverage-notes-sample-jacoco COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample-jacoco.xml print)
+add_test(NAME coverage-notes-sample-cobertura COMMAND coverage-notes --cobertura ${CMAKE_SOURCE_DIR}/sample-cobertura.xml print)
