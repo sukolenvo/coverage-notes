@@ -4,9 +4,7 @@
 #include <ostream>
 #include <string>
 
-#include "coverage_info.hpp"
-
-class CoverageSummary
+struct CoverageSummary
 {
   long double instructionCoverage{};
   long double lineCoverage{};
@@ -17,7 +15,7 @@ class CoverageSummary
 
 public:
   explicit CoverageSummary(const std::string &printed);
-  explicit CoverageSummary(const CoverageInfo &coverageInfo);
+  CoverageSummary() = default;
 
   [[nodiscard]] std::string print() const;
   [[nodiscard]] bool empty() const;

@@ -25,7 +25,7 @@
 #include <simple_cpp_xml/exception.hpp>
 #include <spdlog/spdlog.h>
 
-#include "core/coverage_summary.hpp"
+#include "cobertura/cobertura_parser.hpp"
 #include "jacoco/jacoco_parser.hpp"
 
 auto readFile(auto path)
@@ -72,15 +72,13 @@ std::optional<std::string> read_base_tree(simple_cpp::github_rest::Client &clien
 }
 
 void create_note(simple_cpp::github_rest::Client &client,
-  const CoverageInfo &coverage,
+  const CoverageSummary &coverage,
   const std::string &ref,
   const std::string &commitSha)
 {
   const auto base_tree = read_base_tree(client, ref);
   const simple_cpp::github_rest::CreateTreeRequestBody createTreeRequestBody{
-    .tree = { { .path = commitSha,
-      .mode = simple_cpp::github_rest::MODE_FILE,
-      .content = CoverageSummary(coverage).print() } },
+    .tree = { { .path = commitSha, .mode = simple_cpp::github_rest::MODE_FILE, .content = coverage.print() } },
     .base_tree = base_tree
   };
   simple_cpp::github_rest::CreateTreeRequest createTreeRequest{ createTreeRequestBody };
@@ -140,13 +138,38 @@ void update_pull(simple_cpp::github_rest::Client &client,
   updatePullRequest.execute(client);
 }
 
+CoverageSummary parseCoverage(const CLI::App &app)
+{
+  if (!app.get_option("--jacoco")->empty()) {
+    std::string filename;
+    app.get_option("--jacoco")->results(filename);
+    const auto content = readFile(filename);
+    JacocoParser parser;
+    parser.parse(content);
+    return parser.getCoverageInfo().buildSummary();
+  }
+  if (!app.get_option("--cobertura")->empty()) {
+    std::string filename;
+    app.get_option("--cobertura")->results(filename);
+    const auto content = readFile(filename);
+    CoberturaParser parser;
+    parser.parse(content);
+    return parser.getCoverageInfo().buildSummary();
+  }
+  spdlog::error("Coverage file required");
+  std::exit(EXIT_FAILURE);
+}
+
 int main(int argc, const char **argv)
 {
   CLI::App app{ "App description" };
   app.require_subcommand();
 
   std::string filename;
-  app.add_option("-j,--jacoco", filename, "Jacoco XML report");
+  auto *jacocoOption = app.add_option("-j,--jacoco", filename, "Jacoco XML report");
+  auto *coberturaOption = app.add_option("--cobertura", filename, "Cobertura XML report");
+  jacocoOption->excludes(coberturaOption)->check(CLI::ExistingFile);
+  coberturaOption->excludes(jacocoOption)->check(CLI::ExistingFile);
   std::string repository = read_env("GITHUB_REPOSITORY");
   app.add_option("--github_repository",
     repository,
@@ -168,14 +191,8 @@ int main(int argc, const char **argv)
 
   try {
     if (printCmd->parsed()) {
-      if (filename.empty()) {
-        spdlog::error("Jacoco file required");
-        return EXIT_FAILURE;
-      }
-      const auto content = readFile(filename);
-      JacocoParser parser;
-      parser.parse(content);
-      std::cout << CoverageSummary(parser.getCoverageInfo()).print();
+      const CoverageSummary coverageSummary = parseCoverage(app);
+      std::cout << coverageSummary.print();
       return EXIT_SUCCESS;
     }
 
@@ -202,14 +219,8 @@ int main(int argc, const char **argv)
         spdlog::error("Commit sha is missing");
         return EXIT_FAILURE;
       }
-      if (filename.empty()) {
-        spdlog::error("Jacoco file required");
-        return EXIT_FAILURE;
-      }
-      const auto content = readFile(filename);
-      JacocoParser parser;
-      parser.parse(content);
-      create_note(client, parser.getCoverageInfo(), notesRef, commit);
+      CoverageSummary coverageSummary = parseCoverage(app);
+      create_note(client, coverageSummary, notesRef, commit);
       simple_cpp::github_rest::ListPullsByCommitRequest listPullsByCommitRequest{ commit };
       auto pulls = listPullsByCommitRequest.execute(client);
       for (const auto &pull : pulls) {

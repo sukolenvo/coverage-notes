@@ -1,9 +1,11 @@
-#ifndef COVERAGE_NOTES_COVERAGE_INFO_HPP
-#define COVERAGE_NOTES_COVERAGE_INFO_HPP
+#ifndef COVERAGE_NOTES_JACOCO_COVERAGE_HPP
+#define COVERAGE_NOTES_JACOCO_COVERAGE_HPP
 
 #include <string>
 
-struct CoverageInfo
+#include "core/coverage_summary.hpp"
+
+struct JacocoCoverage
 {
   unsigned long instructionMissed{};
   unsigned long instructionCovered{};
@@ -19,6 +21,8 @@ struct CoverageInfo
   unsigned long complexityCovered{};
 
 public:
-  auto operator<=>(const CoverageInfo &other) const = default;
+  auto operator<=>(const JacocoCoverage &other) const = default;
+
+  [[nodiscard]] CoverageSummary buildSummary() const;
 };
-#endif // COVERAGE_NOTES_COVERAGE_INFO_HPP
+#endif // COVERAGE_NOTES_JACOCO_COVERAGE_HPP

@@ -16,7 +16,7 @@ endif ()
 # Set the project name and language
 project(
     coverage_notes
-    VERSION 0.3.1
+    VERSION 0.4
     HOMEPAGE_URL "https://github.com/sukolenvo/coverage-notes"
     LANGUAGES CXX)
 
@@ -46,7 +46,7 @@ include(FetchContent)
 FetchContent_Declare(
     XML
     GIT_REPOSITORY https://github.com/sukolenvo/simple-cpp-xml.git
-    GIT_TAG 3be703fac9211e4bd1c63d8bd07f7802d8dfe80b
+    GIT_TAG v0.2
     GIT_SHALLOW TRUE
 )
 FetchContent_Declare(
@@ -97,4 +97,5 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 add_subdirectory(test)
-add_test(NAME coverage-notes-sample COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample.xml print)
+add_test(NAME coverage-notes-sample-jacoco COMMAND coverage-notes --jacoco ${CMAKE_SOURCE_DIR}/sample-jacoco.xml print)
+add_test(NAME coverage-notes-sample-cobertura COMMAND coverage-notes --cobertura ${CMAKE_SOURCE_DIR}/sample-cobertura.xml print)
