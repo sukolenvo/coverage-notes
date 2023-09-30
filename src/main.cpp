@@ -50,6 +50,14 @@ std::string read_env(const std::string &name)
   return value;
 }
 
+template<> struct fmt::formatter<CoverageSummary> : fmt::formatter<std::string>
+{
+  auto format(CoverageSummary coverageSummary, format_context &ctx) const -> decltype(ctx.out())
+  {
+    return format_to(ctx.out(), "{}", coverageSummary.print());
+  }
+};
+
 std::optional<std::string> read_base_tree(simple_cpp::github_rest::Client &client, const std::string &notesRef)
 {
   simple_cpp::github_rest::GetReferenceRequest getReferenceRequest{ notesRef };
@@ -113,15 +121,14 @@ void update_pull(simple_cpp::github_rest::Client &client,
   const std::string &notesRef)
 {
   const auto baseCoverage = get_coverage_info(client, pull.base.sha, notesRef);
+  spdlog::info("Base coverage: {}", baseCoverage);
   const auto headCoverage = get_coverage_info(client, pull.head.sha, notesRef);
-  if (baseCoverage.empty() || headCoverage.empty()) {
-    spdlog::warn("Can't update PR {}. Coverage info missing. Base: {}, head: {}",
-      pull.number,
-      baseCoverage.print(),
-      headCoverage.print());
+  spdlog::info("Head coverage: {}", baseCoverage);
+  if (headCoverage.empty()) {
+    spdlog::warn("Can't update PR {}. Coverage info missing", pull.number);
     return;
   }
-  const auto diff = baseCoverage.diff(headCoverage);
+  const auto diff = (baseCoverage.empty() ? headCoverage : baseCoverage).diff(headCoverage);
   spdlog::info("Updating PR {}. Diff: {}", pull.number, diff);
   std::string body = pull.body.value_or("");
   body.erase(std::remove(body.begin(), body.end(), '\r'), body.cend());
