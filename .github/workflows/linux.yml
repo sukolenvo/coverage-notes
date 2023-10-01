@@ -28,6 +28,7 @@ jobs:
         compiler:
           - c: gcc-12
             cpp: g++-12
+            gcovExecutable: gcov-12
           - c: clang-14
             cpp: clang++-14
         build_type:
@@ -39,20 +40,35 @@ jobs:
           submodules: true
       - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Configure CMake
-        run: |
-          cmake -S . -B ./build -G "Ninja Multi-Config" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF
+        run: >
+          cmake -S . -B ./build -G "Ninja Multi-Config"
+          -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} 
+          -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
+          -DBUILD_SHARED_LIBS:BOOL=OFF
+          -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
         env:
           CC: ${{matrix.compiler.c}}
           CXX: ${{matrix.compiler.cpp}}
       - name: Build
         run: |
-          cmake --build ./build --config ${{matrix.build_type}}
-      - name: Test and coverage
+          cmake --build ./build --config ${{matrix.build_type}} -- -j 2
+      - name: Test
         working-directory: ./build
         run: |
           ctest -C ${{matrix.build_type}} --output-on-failure
-        # TODO: gcovr -j ${{env.nproc}} --delete --root ../src/ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}' --verbose
-
+      - name: Coverage
+        working-directory: ./build
+        if: ${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
+        run: |
+          sudo apt-get install -y gcovr
+          gcovr -r ../ -s --gcov-executable ${{ matrix.compiler.gcovExecutable }} -f ../src --xml coverage.xml
+      - name: coverage-note
+        uses: sukolenvo/coverage-notes-action@v0.4
+        if: ${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
+        continue-on-error: true
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          cobertura: build/coverage.xml
       - name: Release
         uses: softprops/action-gh-release@v1
         if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build_type == 'Release' && startsWith(matrix.compiler.c, 'gcc') }}
