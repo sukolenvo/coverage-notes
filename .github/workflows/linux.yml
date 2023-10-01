@@ -31,7 +31,7 @@ jobs:
             gcovExecutable: gcov-12
           - c: clang-14
             cpp: clang++-14
-        build_type:
+        build-type:
           - Release
           - Debug
     steps:
@@ -42,7 +42,7 @@ jobs:
       - name: Configure CMake
         run: >
           cmake -S . -B ./build -G "Ninja Multi-Config"
-          -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} 
+          -DCMAKE_BUILD_TYPE:STRING=${{matrix.build-type}} 
           -DCOVERAGE_NOTES_WARNINGS_AS_ERRORS:BOOL=ON
           -DBUILD_SHARED_LIBS:BOOL=OFF
           -DOPT_ENABLE_COVERAGE:BOOL=${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
@@ -51,11 +51,11 @@ jobs:
           CXX: ${{matrix.compiler.cpp}}
       - name: Build
         run: |
-          cmake --build ./build --config ${{matrix.build_type}} -- -j 2
+          cmake --build ./build --config ${{matrix.build-type}} -- -j 2
       - name: Test
         working-directory: ./build
         run: |
-          ctest -C ${{matrix.build_type}} --output-on-failure
+          ctest -C ${{matrix.build-type}} --output-on-failure
       - name: Coverage
         working-directory: ./build
         if: ${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
@@ -63,7 +63,7 @@ jobs:
           sudo apt-get install -y gcovr
           gcovr -r ../ -s --gcov-executable ${{ matrix.compiler.gcovExecutable }} -f ../src --xml coverage.xml
       - name: coverage-note
-        uses: sukolenvo/coverage-notes-action@v0.4
+        uses: sukolenvo/coverage-notes-action@v0.4.1
         if: ${{ matrix.compiler.gcovExecutable != '' && matrix.build-type == 'Debug' }}
         continue-on-error: true
         with:
@@ -71,7 +71,7 @@ jobs:
           cobertura: build/coverage.xml
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build_type == 'Release' && startsWith(matrix.compiler.c, 'gcc') }}
+        if: ${{ startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Release' && startsWith(matrix.compiler.c, 'gcc') }}
         with:
           files: |
-            build/src/${{matrix.build_type}}/coverage-notes-*
+            build/src/${{matrix.build-type}}/coverage-notes-*
