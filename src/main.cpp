@@ -112,8 +112,12 @@ CoverageSummary
   get_coverage_info(simple_cpp::github_rest::Client &client, const std::string &commitSha, const std::string &notesRef)
 {
   simple_cpp::github_rest::GetRepositoryContentRequest getRepositoryContentRequest{ commitSha, notesRef };
-  const auto content = getRepositoryContentRequest.execute(client);
-  return CoverageSummary(content.parse_content());
+  try {
+    const auto content = getRepositoryContentRequest.execute(client);
+    return CoverageSummary(content.parse_content());
+  } catch (const simple_cpp::github_rest::GithubRestApiException &) {
+    return {};
+  }
 }
 
 void update_pull(simple_cpp::github_rest::Client &client,
